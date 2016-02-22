@@ -33,9 +33,9 @@ public class LoadClienti_sqlexpress {
 			// conn.setAutoCommit(false);
 			System.out.println("Opened database successfully");
 
-			//loadClientiAgg(conn);
+			loadClientiAgg(conn);
 
-			updateClientiServizi(conn);
+			//updateClientiServizi(conn);
 
 			conn.close();
 		} catch (SQLException se) {
@@ -158,6 +158,69 @@ public class LoadClienti_sqlexpress {
 
 	}
 
+	
+	/**
+	 * 
+	 * @param conn
+	 * @param pathdir
+	 */
+	public static void loadClientixDSL(Connection conn) {
+
+		try {
+
+			FileInputStream fstream = new FileInputStream(
+					"/home/luigi/Documenti/work/astelutilities/IndirizziIPClienti.csv");
+			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+			String strLine;
+
+			Statement stmt = conn.createStatement();
+			int i = 0;
+			br.readLine();// salta la prima riga
+			while ((strLine = br.readLine()) != null) {
+
+				System.out.println((++i) + "-line:" + strLine);
+				String[] t = strLine.split(";");
+				// if (t.length!=10)
+				// logger.warn(strLine+"---length----------------------------------------="+t.length);
+
+				int j = -1;
+				String ragsoc = t[++j];
+				String telefono = t[++j];
+				String cps = t[++j];
+				String data_cps = t[++j];
+				String adsl = t[++j];
+				String tgu = "";
+				String wlr = t[++j];
+				String voip = t[++j];
+				String note = t[++j];
+				String agente = t[++j];
+
+				ragsoc = ragsoc.replaceAll("'", "''");
+				note = note.replaceAll("'", "''");
+				agente = agente.replaceAll("'", "''");
+
+				String sql = "INSERT INTO clientixdsl (ragsoc,telefono,adsl,tgu,cps,wlr,voip,note,agente)"
+						+ " VALUES ('" + ragsoc + "','" + telefono + "','" + adsl + "','" + tgu + "','" + cps + "','"
+						+ wlr + "','" + voip + "','" + note + "','" + agente + "');";
+
+				stmt.executeUpdate(sql);
+
+			}
+
+			stmt.close();
+			br.close();
+			fstream.close();
+			// conn.commit();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception e:" + e.getMessage());
+
+		}
+
+	}
+	
+	
 	/**
 	 * 
 	 * @param conn

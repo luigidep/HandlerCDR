@@ -170,6 +170,44 @@ public class utility {
 	 * @param table
 	 * @return
 	 */
+	public static HashMap<String, Long> getClientiServizi(Connection conn) {
+		HashMap<String, Long> hm = new HashMap<String, Long>();
+		Statement st = null;
+		ResultSet rs = null;
+		try {
+
+			st = conn.createStatement();
+
+			String sql = "SELECT id,ragsoc from ClientiServizi";
+
+			rs = st.executeQuery(sql);
+
+			while (rs.next())
+				hm.put(rs.getString(2),rs.getLong(1));
+
+			
+		} catch (Exception e) {
+			logger.error("Exception e:" + e.getMessage());
+
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (st != null)
+					st.close();
+			} catch (Exception e2) {
+				logger.error("Exception e2:" + e2.getMessage());
+			}
+		}
+		return hm;
+	}
+	
+	/**
+	 * 
+	 * @param conn
+	 * @param table
+	 * @return
+	 */
 	public static HashMap<String, String> getNumeriNonGeografici(Connection conn) {
 		HashMap<String, String> hm = new HashMap<String, String>();
 		Statement st = null;
