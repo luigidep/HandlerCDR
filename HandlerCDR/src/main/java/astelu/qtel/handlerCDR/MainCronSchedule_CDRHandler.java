@@ -48,8 +48,8 @@ public class MainCronSchedule_CDRHandler
  	
     	JobDetail job = JobBuilder.newJob(CDRHandler.class).withIdentity("CDRHandler", "astelu").build();
     	
-    	//Trigger trigger = TriggerBuilder.newTrigger().withIdentity("CDRHandler", "astelu").startNow().build();
-    	
+    	Trigger trigger = TriggerBuilder.newTrigger().withIdentity("CDRHandler", "astelu").startNow().build();
+    	/*
     	Trigger trigger = TriggerBuilder
 				.newTrigger()
 				.withIdentity("CDRHandler", "astelu")
@@ -57,7 +57,7 @@ public class MainCronSchedule_CDRHandler
 						//CronScheduleBuilder.cronSchedule("0 2 * * * ?")) //ogni 2 minuti
 				CronScheduleBuilder.cronSchedule(crontab)) //ogni GIORNO ALLE 12.18
 				.build();
-    	
+    	*/
     	//schedule it
     	Scheduler scheduler = new StdSchedulerFactory().getScheduler();
     	scheduler.start();

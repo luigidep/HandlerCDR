@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
@@ -23,19 +24,27 @@ public class LoadClienti_sqlexpress {
 	static final String USER = "jdbc";
 	static final String PASS = "jdbc";
 
+	static final String JDBC_DRIVER_p = "org.postgresql.Driver";
+	static final String DB_URL_p = "jdbc:postgresql://localhost:5432/astelu";
+
+	static final String USER_p = "astelu";
+	static final String PASS_p = "astelu";
+
 	public static void main(String[] args) {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
 
-			Class.forName(JDBC_DRIVER);
-			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			Class.forName(JDBC_DRIVER_p);
+			conn = DriverManager.getConnection(DB_URL_p, USER_p, PASS_p);
 			// conn.setAutoCommit(false);
 			System.out.println("Opened database successfully");
 
-			loadClientiAgg(conn);
+			// loadClientiServizi(conn);
 
-			//updateClientiServizi(conn);
+			// updateClientiServizi(conn);
+
+			loadClientixDSL(conn);
 
 			conn.close();
 		} catch (SQLException se) {
@@ -102,7 +111,7 @@ public class LoadClienti_sqlexpress {
 	 * @param conn
 	 * @param pathdir
 	 */
-	public static void loadClientiAgg(Connection conn) {
+	public static void loadClientiServizi(Connection conn) {
 
 		try {
 
@@ -158,7 +167,6 @@ public class LoadClienti_sqlexpress {
 
 	}
 
-	
 	/**
 	 * 
 	 * @param conn
@@ -173,37 +181,38 @@ public class LoadClienti_sqlexpress {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 			String strLine;
 
+			HashMap<String, Long> hm = utility.getClientiServizi(conn);
 			Statement stmt = conn.createStatement();
 			int i = 0;
 			br.readLine();// salta la prima riga
+			int contaNonTrovati = 0;
 			while ((strLine = br.readLine()) != null) {
 
 				System.out.println((++i) + "-line:" + strLine);
 				String[] t = strLine.split(";");
-				// if (t.length!=10)
+				// if (t.length!=6)
 				// logger.warn(strLine+"---length----------------------------------------="+t.length);
 
 				int j = -1;
 				String ragsoc = t[++j];
-				String telefono = t[++j];
-				String cps = t[++j];
-				String data_cps = t[++j];
-				String adsl = t[++j];
-				String tgu = "";
-				String wlr = t[++j];
-				String voip = t[++j];
-				String note = t[++j];
-				String agente = t[++j];
+				String ip = t[++j];
+				String ping = t[++j];
+				String man = t[++j];
+				String modrouter = t[++j];
 
 				ragsoc = ragsoc.replaceAll("'", "''");
-				note = note.replaceAll("'", "''");
-				agente = agente.replaceAll("'", "''");
+				Long idcliente = 0L;
+				if (hm.containsKey(ragsoc)) {
+					idcliente = hm.get(ragsoc);
+					String sql = "INSERT INTO clientixdsl (idcliente,ip,ping,man,modello_router)" + " VALUES ('"
+							+ idcliente + "','" + ip + "','" + ping + "','" + man + "','" + modrouter + "');";
 
-				String sql = "INSERT INTO clientixdsl (ragsoc,telefono,adsl,tgu,cps,wlr,voip,note,agente)"
-						+ " VALUES ('" + ragsoc + "','" + telefono + "','" + adsl + "','" + tgu + "','" + cps + "','"
-						+ wlr + "','" + voip + "','" + note + "','" + agente + "');";
+					stmt.executeUpdate(sql);
+				} else {
+					contaNonTrovati++;
+					logger.warn(contaNonTrovati + ": cliente non trovato:-------------------->" + ragsoc);
 
-				stmt.executeUpdate(sql);
+				}
 
 			}
 
@@ -219,8 +228,7 @@ public class LoadClienti_sqlexpress {
 		}
 
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param conn
