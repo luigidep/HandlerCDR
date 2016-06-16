@@ -50,6 +50,12 @@ public class NetworkShareFileCopy {
 	// static final String NETWORK_FOLDER = "smb://galaxy/pubblici/";
 	// static final String NETWORK_FOLDER = "smb://win7-64-vm/condivisa/";
 
+	public static void main(String[] args) throws Exception {
+		
+		
+		LinkedList<String> ls=getSambaFileList(NETWORK_FOLDER_BELLNET);
+	}
+	
 	/**
 	 * @param args
 	 * @throws Exception
@@ -311,7 +317,7 @@ public class NetworkShareFileCopy {
 	 * @return
 	 * @throws java.lang.Exception
 	 */
-	public static LinkedList<String> getSambaFileList(String path) throws Exception {
+	public static LinkedList<String> getSambaFileListColt(String path) throws Exception {
 		LinkedList<String> fList = new LinkedList<String>();
 
 		// String user = "server:server";
@@ -335,6 +341,34 @@ public class NetworkShareFileCopy {
 			System.out.println(sf[i].getName());
 			String fn = sf[i].getName();
 			tm.put(fn, Long.parseLong(StringUtils.substringBefore(fn, ".cdr")));
+		}
+
+		return fList;
+	}
+	
+	public static LinkedList<String> getSambaFileList(String path) throws Exception {
+		LinkedList<String> fList = new LinkedList<String>();
+
+		// String user = "server:server";
+		// System.out.println("User: " + user);
+
+		// NtlmPasswordAuthentication auth = new
+		// NtlmPasswordAuthentication(user);
+		SmbFile[] sf = null;
+		try {
+			sf = new SmbFile(path).listFiles();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// SmbFile[] fArr = f.listFiles();
+		TreeMap<String, Long> tm = new TreeMap<String, Long>();
+
+		for (int i = 0; i < sf.length; i++) {
+			fList.add(sf[i].getName());
+
+			System.out.println(sf[i].getName());
+			
 		}
 
 		return fList;
@@ -480,14 +514,7 @@ public class NetworkShareFileCopy {
 				builder = readFileContent(sFile, builder);
 
 				Files.write(Paths.get(locPath + fn), builder.toString().getBytes());
-
-				/*
-				 * System.out.println("========================== display " + fn
-				 * + " =============="); System.out.println(builder.toString());
-				 * System.out.println(
-				 * "========================== End  here ================================"
-				 * ); successful = true;
-				 */
+				
 				Thread.sleep(100);
 			}
 

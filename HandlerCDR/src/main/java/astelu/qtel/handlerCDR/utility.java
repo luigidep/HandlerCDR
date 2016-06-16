@@ -15,10 +15,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -178,7 +178,7 @@ public class utility {
 
 			st = conn.createStatement();
 
-			String sql = "SELECT id,ragsoc from ClientiServizi";
+			String sql = "SELECT id,ragsoc from ClientiServizi_cm";
 
 			rs = st.executeQuery(sql);
 

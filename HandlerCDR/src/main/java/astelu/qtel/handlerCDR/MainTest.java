@@ -3,7 +3,6 @@ package astelu.qtel.handlerCDR;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
